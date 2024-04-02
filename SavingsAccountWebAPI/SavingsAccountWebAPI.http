@@ -1,0 +1,6 @@
+@SavingsAccountWebAPI_HostAddress = http://localhost:5023
+
+GET {{SavingsAccountWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
