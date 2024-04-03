@@ -12,8 +12,8 @@ using SavingsAccountWebAPI.Data;
 namespace SavingsAccountWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240402143923_Added_User_Table")]
-    partial class Added_User_Table
+    [Migration("20240402234451_Added_Account_Table")]
+    partial class Added_Account_Table
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,38 @@ namespace SavingsAccountWebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("SavingsAccountWebAPI.Model.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AccountNumber")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedAt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float?>("CurrentBalance")
+                        .HasColumnType("real");
+
+                    b.Property<string>("DeletedAt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float?>("OpeningBalance")
+                        .HasColumnType("real");
+
+                    b.Property<string>("OwnerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedAt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Accounts");
+                });
 
             modelBuilder.Entity("SavingsAccountWebAPI.Model.User", b =>
                 {
