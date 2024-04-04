@@ -26,9 +26,10 @@ namespace SavingsAccountWebAPI.Controllers
                 AccountNumber = Guid.NewGuid(),
                 OwnerName = request.OwnerName,
                 OpeningBalance = request.OpeningBalance,
-                CurrentBalance = 0
-            };
+                CurrentBalance = request.OpeningBalance
+        };
 
+            
             var CreatedAccount = await _accountRepository.Create(Account);
             return Ok(CreatedAccount);
         }
@@ -42,9 +43,23 @@ namespace SavingsAccountWebAPI.Controllers
         [HttpGet("{id}"), Authorize]
         public async Task<IActionResult> GetAccountById(Guid id)
         {
-            var targetAccount = await _accountRepository.GetById(id);
+            var targetAccount = await _accountRepository.GetAccountByAccountId(id);
 
             if (targetAccount == null)
+            {
+                return BadRequest("Account does not exist!");
+            }
+
+            return Ok(targetAccount);
+        }
+
+        [HttpGet("account/by-accountNumber/{accountNumber}")]
+        [Authorize]
+        public async Task<IActionResult> GetAccountByAccountNumber(Guid accountNumber)
+        {
+            var targetAccount = await _accountRepository.GetAccountByAccountNumber(accountNumber);
+
+            if(targetAccount == null)
             {
                 return BadRequest("Account does not exist!");
             }
@@ -55,7 +70,7 @@ namespace SavingsAccountWebAPI.Controllers
         [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> UpdateAccount(Guid id, AccountUpdateRequestDTO request)
         {
-            var targetAccount = await _accountRepository.GetById(id);
+            var targetAccount = await _accountRepository.GetAccountByAccountId(id);
 
 
             if (targetAccount == null)
@@ -76,7 +91,7 @@ namespace SavingsAccountWebAPI.Controllers
         [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeleteAccount(Guid id)
         {
-            var targetAccount = await _accountRepository.GetById(id);
+            var targetAccount = await _accountRepository.GetAccountByAccountId(id);
 
             if (targetAccount == null)
             {

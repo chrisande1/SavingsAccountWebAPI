@@ -5,7 +5,7 @@
         public Guid AccountNumber { get; set; }
         public string? OwnerName { get; set; }
         public float? OpeningBalance { get; set; }
-        public float? CurrentBalance { get; set; }
+        public float CurrentBalance { get; set; }
 
     }
 }
