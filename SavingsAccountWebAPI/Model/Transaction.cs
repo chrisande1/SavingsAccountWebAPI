@@ -10,6 +10,6 @@
         public TransactionType TransactionType { get; set; }
         public float? Amount { get; set; }
         public string? TransactionDate { get; set; }
-        public Account? Account { get; set; } 
+        public Account Account { get; set; } 
     }
 }

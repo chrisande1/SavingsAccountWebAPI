@@ -85,8 +85,13 @@ void ConfigureMapster()
     TypeAdapterConfig<User, UserResponseDTO>.NewConfig()
         .Map(dest => dest.Name, src => src.Name);
 
-    
+    TypeAdapterConfig<Transaction, TransactionResponseDTO>.NewConfig()
+        .Map(dest => dest.TransactionId, src => src.Id)
+        .Map(dest => dest.Account, src => src.Account.AccountNumber);
+
 }
+
+
 
 var app = builder.Build();
 

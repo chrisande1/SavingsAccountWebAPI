@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using SavingsAccountWebAPI.DTOs;
-using SavingsAccountWebAPI.DTOsClass;
-using SavingsAccountWebAPI.Exceptions;
+using SavingsAccountWebAPI.Model;
 using SavingsAccountWebAPI.Services.Interface;
 using SavingsAccountWebAPI.Services.Repository;
 
@@ -33,28 +33,58 @@ namespace SavingsAccountWebAPI.Controllers
                 return BadRequest("Account not found.");
             }
 
+            var transaction = new Transaction
+            {
+
+                Amount = request.Amount,
+                TransactionType = request.TransactionType,
+                TransactionDate = DateTime.Now.ToString(),
+                Account = account
+
+            };
+
             // Validate transaction amount (assuming non-negative amount)
             if (request.Amount <= 0)
             {
                 return BadRequest("Transaction amount must be positive.");
             }
 
-            // Update account balance (assuming UpdateBalance handles logic)
+            if (request.TransactionType == TransactionType.Withdrawal && account.CurrentBalance < request.Amount)
+            {
+                return BadRequest("Insufficient funds for withdrawal.");// Handle insufficient funds
+            }
+
+            // Update account balance 
             await _accountRespository.UpdateBalance(account, request.Amount, request.TransactionType);
 
-            // Create a transaction response object
-            var transactionResponse = new TransactionResponseDTO
-            {
-                AccountId = account.Id, // Assuming you want AccountId in the response
-                AccountNumber = account.AccountNumber,
-                TransactionType = request.TransactionType,
-                Amount = request.Amount,
-                CurrentBalance = account.CurrentBalance,
-                TransactionDate = DateTime.Now.ToString()
-            };
 
-            // Return the transaction response
-            return Ok(transactionResponse);
+            var result = await _transactionRepository.Create(transaction);
+            var createdTransaction = result.Adapt<TransactionResponseDTO>();
+            return Ok(createdTransaction);
+            
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllTransactions()
+        {
+            var result = await _transactionRepository.GetAllTransactions();
+            
+            return Ok(result.Adapt<List<TransactionResponseDTO>>());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTransactionById(Guid id)
+        {
+            var result = await _transactionRepository.GetTransactionById(id);
+            return Ok(result.Adapt<TransactionResponseDTO>());
+        }
+
+        [HttpGet("AccountNumber")]
+        public async Task<IActionResult> GetAllTransactionsByAccountNumber(Guid AccountNumber)
+        {
+            var result = await _transactionRepository.GetAllTransactionsByAccountNumber(AccountNumber); 
+            
+            return Ok(result.Adapt<List<TransactionResponseDTO>>());
         }
 
 
