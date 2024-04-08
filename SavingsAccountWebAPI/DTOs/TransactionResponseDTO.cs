@@ -9,7 +9,7 @@ namespace SavingsAccountWebAPI.DTOs
         TransactionType TransactionType,
         string TransactionDate,
         float Amount,
-        Guid Account
+        string Account
 
         );
 }

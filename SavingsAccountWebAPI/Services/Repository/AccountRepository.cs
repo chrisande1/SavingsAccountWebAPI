@@ -2,6 +2,7 @@
 using SavingsAccountWebAPI.Data;
 using SavingsAccountWebAPI.Model;
 using SavingsAccountWebAPI.Services.Interface;
+using System;
 
 namespace SavingsAccountWebAPI.Services.Repository
 {
@@ -39,10 +40,10 @@ namespace SavingsAccountWebAPI.Services.Repository
         public async Task<Account?> GetAccountByAccountId(Guid Id)
         {
             return await _dBContext.Accounts
-                .Where(account => account.DeletedAt != null)
+                .Where(account => account.DeletedAt == null)
                 .FirstOrDefaultAsync(account => account.Id == Id);
         }
-        public async Task<Account?> GetAccountByAccountNumber(Guid AccountNumber)
+        public async Task<Account?> GetAccountByAccountNumber(string AccountNumber)
         {
             return await _dBContext.Accounts
                 .Where(account => account.DeletedAt == null)
@@ -63,6 +64,41 @@ namespace SavingsAccountWebAPI.Services.Repository
             return targetAccount;
         }
 
-        
+        public async Task<bool> IsAccountNumberExists(string accountNumber)
+        {
+            return await _dBContext.Accounts.AnyAsync(a => a.AccountNumber == accountNumber);
+        }
+
+        public async Task<string> GenerateUniqueAccountNumber()
+        {
+            var random = new Random(); // Create an instance of Random
+            string accountNumber;
+            do
+            {
+                // Generate random digits
+                char[] digits = new char[14];
+                for (int i = 0; i < 14; i++)
+                {
+                    digits[i] = (char)random.Next(48, 58);
+                }
+
+                // Format with hyphens (every 4 digits)
+                accountNumber = string.Empty;
+                for (int i = 0; i < 14; i++)
+                {
+                    accountNumber += digits[i];
+                    if (i == 3 || i == 7)
+                    {
+                        accountNumber += "-";
+                    }
+                }
+            } while (await IsAccountNumberExists(accountNumber)); // Check for uniqueness
+
+            return accountNumber;
+        }
+
+
+
+
     }
 }

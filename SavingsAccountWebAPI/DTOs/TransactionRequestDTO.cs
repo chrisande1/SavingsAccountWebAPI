@@ -4,7 +4,7 @@ namespace SavingsAccountWebAPI.DTOs
 {
     public record TransactionRequestDTO
     (
-        Guid AccountNumber,
+        string AccountNumber,
         TransactionType TransactionType,
         float Amount
      

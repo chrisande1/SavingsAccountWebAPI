@@ -80,7 +80,7 @@ namespace SavingsAccountWebAPI.Controllers
         }
 
         [HttpGet("AccountNumber")]
-        public async Task<IActionResult> GetAllTransactionsByAccountNumber(Guid AccountNumber)
+        public async Task<IActionResult> GetAllTransactionsByAccountNumber(string AccountNumber)
         {
             var result = await _transactionRepository.GetAllTransactionsByAccountNumber(AccountNumber); 
             

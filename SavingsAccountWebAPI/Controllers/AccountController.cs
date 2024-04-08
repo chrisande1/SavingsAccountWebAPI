@@ -23,7 +23,7 @@ namespace SavingsAccountWebAPI.Controllers
         {
             var Account = new Account
             {
-                AccountNumber = Guid.NewGuid(),
+                AccountNumber = await _accountRepository.GenerateUniqueAccountNumber(),
                 OwnerName = request.OwnerName,
                 OpeningBalance = request.OpeningBalance,
                 CurrentBalance = request.OpeningBalance
@@ -55,7 +55,7 @@ namespace SavingsAccountWebAPI.Controllers
 
         [HttpGet("account/by-accountNumber/{accountNumber}")]
         [Authorize]
-        public async Task<IActionResult> GetAccountByAccountNumber(Guid accountNumber)
+        public async Task<IActionResult> GetAccountByAccountNumber(string accountNumber)
         {
             var targetAccount = await _accountRepository.GetAccountByAccountNumber(accountNumber);
 

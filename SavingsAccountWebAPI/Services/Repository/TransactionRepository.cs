@@ -19,7 +19,7 @@ namespace SavingsAccountWebAPI.Services.Repository
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Transaction>> GetAllTransactionsByAccountNumber(Guid AccountNumber)
+        public async Task<IEnumerable<Transaction>> GetAllTransactionsByAccountNumber(string AccountNumber)
         {
             return await _dBContext.Transactions
                 .Include(transaction => transaction.Account)
